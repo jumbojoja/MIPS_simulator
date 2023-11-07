@@ -17,7 +17,9 @@ endif()
 
 # ------------------------------------------------------------------------------
 
-add_definitions(-std=c++11)
+add_definitions(-std=c++17)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 project(MIPS_simulator
   LANGUAGES CXX
@@ -28,8 +30,15 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
     set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 endif()
 
-add_executable(MIPS_simulator main.cpp)
-target_include_directories(MIPS_simulator PRIVATE src)
+add_subdirectory(compile)
+
+add_executable(MIPS_simulator main.cpp )
+target_include_directories(MIPS_simulator PRIVATE 
+                           ${PROJECT_BINARY_DIR}
+                           ${PROJECT_SOURCE_DIR}/compile
+                          )
+
+target_link_libraries(MIPS_simulator PRIVATE compiler)
 
 target_link_libraries(MIPS_simulator
   PRIVATE ftxui::screen
