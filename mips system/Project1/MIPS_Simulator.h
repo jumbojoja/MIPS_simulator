@@ -70,8 +70,11 @@ public:
     // 获取寄存器的值
     int getRegister(int reg) const;
 
-    // 获取内存的值
-    std::vector<unsigned int> getMemory();
+    // 获取所有寄存器的值
+    std::vector<unsigned int> getRegisters();
+
+    // 获取所有内存的值
+    std::vector<unsigned int> getMemories();
 
     // 打印寄存器的值
     void printRegisters();

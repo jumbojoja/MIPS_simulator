@@ -57,34 +57,6 @@ bool MIPS_Simulator::isExecutionFinished() const {
     return pc/4 >= totalInstructionCount;
 }
 
-void MIPS_Simulator::printRegisters() {
-    std::cout << "Registers:" << std::endl;
-    for (int i = 0; i < registers.size(); ++i) {
-        std::cout << "$" << i << ": " << registers[i] << "\t";
-        if ((i + 1) % 8 == 0) {
-            std::cout << std::endl;
-        }
-    }
-    std::cout << std::endl;
-}
-
-void MIPS_Simulator::printMemory() {
-    std::cout << "Memory:" << std::endl;
-
-    for (int i = 0; i < MEMORY_SIZE; ++i) {
-        std::cout << "[" << i << "]: " << memory[i] << "\t";
-        if ((i + 1) % 8 == 0) {
-            std::cout << std::endl;
-        }
-    }
-
-    std::cout << std::endl;
-}
-
-std::vector<unsigned int> MIPS_Simulator::getMemory() {
-    return memory;
-}
-
 double MIPS_Simulator::_binary_decimal(const std::string& operand) {
     int length = operand.size();
     double result = 0;
@@ -210,6 +182,39 @@ int MIPS_Simulator::getRegister(int reg) const {
 void MIPS_Simulator::setRegister(int reg, int value) {
     registers[reg] = value;
 }
+
+void MIPS_Simulator::printRegisters() {
+    std::cout << "Registers:" << std::endl;
+    for (int i = 0; i < registers.size(); ++i) {
+        std::cout << "$" << i << ": " << registers[i] << "\t";
+        if ((i + 1) % 8 == 0) {
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::endl;
+}
+
+void MIPS_Simulator::printMemory() {
+    std::cout << "Memory:" << std::endl;
+
+    for (int i = 0; i < MEMORY_SIZE; ++i) {
+        std::cout << "[" << i << "]: " << memory[i] << "\t";
+        if ((i + 1) % 8 == 0) {
+            std::cout << std::endl;
+        }
+    }
+
+    std::cout << std::endl;
+}
+
+std::vector<unsigned int> MIPS_Simulator::getRegisters() {
+    return registers;
+}
+
+std::vector<unsigned int> MIPS_Simulator::getMemories() {
+    return memory;
+}
+
 void MIPS_Simulator::pushStack(int value) {
     // ½«ÖµÑ¹Èë¶ÑÕ»
     memory[registers[29] / 4] = value;
