@@ -1,0 +1,7 @@
+﻿  Instructions.cpp
+C:\Users\yang1\Desktop\Project1\Project1\Instructions.cpp(86,18): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\yang1\Desktop\Project1\Project1\Instructions.cpp(94,18): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\yang1\Desktop\Project1\Project1\Instructions.cpp(102,19): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\yang1\Desktop\Project1\Project1\Instructions.cpp(110,19): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\yang1\Desktop\Project1\Project1\Instructions.cpp(118,19): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+  Project1.vcxproj -> C:\Users\yang1\Desktop\Project1\Debug\Project1.exe
