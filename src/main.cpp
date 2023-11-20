@@ -15,13 +15,13 @@
 #include "ftxui/screen/color.hpp" // for Color, Color::Blue, Color::Cyan, Color::White, ftxui
 #include "ftxui/screen/screen.hpp" // for Screen
 
+#include "MIPS_Simulator.h"
 #include "compiler.h"
 
 using namespace std;
 using namespace ftxui;
 
-unsigned int zero, at, v0, v1, a0, a1, a2, a3, t0, t1, t2, t3, t4, t5, t6, t7,
-    s0, s1, s2, s3, s4, s5, s6, s7, t8, t9, k0, k1, gp, sp, fp, ra, pc, hi, lo;
+unsigned int hi, lo;
 char str[8];
 std::string str1;
 std::string ToHexString(unsigned int num) {
@@ -31,6 +31,7 @@ std::string ToHexString(unsigned int num) {
 }
 
 int main() {
+  /* TOP */
   int i = 0, num = 0;
 
   get_code();
@@ -47,13 +48,14 @@ int main() {
   for (int i = 0; i < num; ++i) {
     states[i] = false;
     text_segment->Add(
-        Checkbox("0x00000000 | " + Hex[i] + " | " + mem[i], &states[i]));
+        Checkbox("0x" + ToHexString(i * 4) + " | " + Hex[i] + " | " + mem[i],
+                 &states[i]));
   }
 
   auto top = Renderer(text_segment, [&] {
     return vbox({
                hbox({
-                   text("   |Address    | Code       | Source "),
+                   text("   |Address    |Code        |Source  "),
                }),
                separator(),
                text_segment->Render() | vscroll_indicator | frame |
@@ -62,63 +64,205 @@ int main() {
            border;
   });
 
-  auto table = Table({
-      {"Registers Name", "Number", "value"},
-      {"$zero", "0", "0x" + ToHexString(zero)},
-      {"$at", "1", "0x" + ToHexString(at)},
-      {"$v0", "2", "0x" + ToHexString(v1)},
-      {"$v1", "3", "0x" + ToHexString(v1)},
-      {"$a0", "4", "0x" + ToHexString(a0)},
-      {"$a1", "5", "0x" + ToHexString(a1)},
-      {"$a2", "6", "0x" + ToHexString(a2)},
-      {"$a3", "7", "0x" + ToHexString(a3)},
-      {"$t0", "8", "0x" + ToHexString(t0)},
-      {"$t1", "9", "0x" + ToHexString(t1)},
-      {"$t2", "10", "0x" + ToHexString(t2)},
-      {"$t3", "11", "0x" + ToHexString(t3)},
-      {"$t4", "12", "0x" + ToHexString(t4)},
-      {"$t5", "13", "0x" + ToHexString(t6)},
-      {"$t6", "14", "0x" + ToHexString(t6)},
-      {"$t7", "15", "0x" + ToHexString(t7)},
-      {"$s0", "16", "0x" + ToHexString(s0)},
-      {"$s1", "17", "0x" + ToHexString(s1)},
-      {"$s2", "18", "0x" + ToHexString(s2)},
-      {"$s3", "19", "0x" + ToHexString(s3)},
-      {"$s4", "20", "0x" + ToHexString(s4)},
-      {"$s5", "21", "0x" + ToHexString(s5)},
-      {"$s6", "22", "0x" + ToHexString(s6)},
-      {"$s7", "23", "0x" + ToHexString(s7)},
-      {"$t8", "24", "0x" + ToHexString(t8)},
-      {"$t9", "25", "0x" + ToHexString(t9)},
-      {"$k1", "26", "0x" + ToHexString(k1)},
-      {"$gp", "27", "0x" + ToHexString(gp)},
-      {"$sp", "28", "0x" + ToHexString(sp)},
-      {"$fp", "29", "0x" + ToHexString(fp)},
-      {"$ra", "30", "0x" + ToHexString(ra)},
-      {"$pc", "31", "0x" + ToHexString(pc)},
-      {"$hi", "", "0x" + ToHexString(hi)},
-      {"$lo", "", "0x" + ToHexString(lo)},
+  /* MIDDLE */
+  std::vector<unsigned int> registers;
+  std::vector<unsigned int> memories;
+  MIPS_Simulator simulator;
+  simulator.loadInstructions("..\\IO\\out.bin");
+  registers = simulator.getRegisters();
+  memories = simulator.getMemories();
+
+  int page = 0;
+
+  auto buttons0 = Container::Horizontal({
+      Button(
+          "step",
+          [&] {
+            simulator.executeNextInstruction();
+            registers = simulator.getRegisters();
+            memories = simulator.getMemories();
+          },
+          ButtonOption::Animated()),
+      Button(
+          "excute",
+          [&] {
+            while (!simulator.isExecutionFinished()) {
+              simulator.executeNextInstruction();
+            }
+            registers = simulator.getRegisters();
+            memories = simulator.getMemories();
+          },
+          ButtonOption::Animated()),
+      Button(
+          "<---",
+          [&] {
+            if (page >= 64)
+              page -= 64;
+          },
+          ButtonOption::Animated()),
+      Button(
+          "--->",
+          [&] {
+            if (page <= 896)
+              page += 64;
+          },
+          ButtonOption::Animated()),
   });
 
-  table.SelectAll().Border(LIGHT);
+  auto middle = Renderer(buttons0, [&] {
+    return vbox({
+        vbox({
+            text("   |  Address  | Value(+0)  | Value(+4)  | Value(+8)  | "
+                 "Value(+C)  | Value(+10) | Value(+14) | Value(+18) "
+                 "| Value(+1C) |"),
+            text("   |0x" + ToHexString(page) + " | 0x" +
+                 ToHexString(memories[page]) + " | 0x" +
+                 ToHexString(memories[page + 1]) + " | 0x" +
+                 ToHexString(memories[page + 2]) + " | 0x" +
+                 ToHexString(memories[page + 3]) + " | 0x" +
+                 ToHexString(memories[page + 4]) + " | 0x" +
+                 ToHexString(memories[page + 5]) + " | 0x" +
+                 ToHexString(memories[page + 6]) + " | 0x" +
+                 ToHexString(memories[page + 7]) + " |"),
+            text("   |0x" + ToHexString(page + 8) + " | 0x" +
+                 ToHexString(memories[page + 8]) + " | 0x" +
+                 ToHexString(memories[page + 9]) + " | 0x" +
+                 ToHexString(memories[page + 10]) + " | 0x" +
+                 ToHexString(memories[page + 11]) + " | 0x" +
+                 ToHexString(memories[page + 12]) + " | 0x" +
+                 ToHexString(memories[page + 13]) + " | 0x" +
+                 ToHexString(memories[page + 14]) + " | 0x" +
+                 ToHexString(memories[page + 15]) + " |"),
+            text("   |0x" + ToHexString(page + 16) + " | 0x" +
+                 ToHexString(memories[page + 16]) + " | 0x" +
+                 ToHexString(memories[page + 17]) + " | 0x" +
+                 ToHexString(memories[page + 18]) + " | 0x" +
+                 ToHexString(memories[page + 19]) + " | 0x" +
+                 ToHexString(memories[page + 20]) + " | 0x" +
+                 ToHexString(memories[page + 21]) + " | 0x" +
+                 ToHexString(memories[page + 22]) + " | 0x" +
+                 ToHexString(memories[page + 23]) + " |"),
+            text("   |0x" + ToHexString(page + 24) + " | 0x" +
+                 ToHexString(memories[page + 24]) + " | 0x" +
+                 ToHexString(memories[page + 25]) + " | 0x" +
+                 ToHexString(memories[page + 26]) + " | 0x" +
+                 ToHexString(memories[page + 27]) + " | 0x" +
+                 ToHexString(memories[page + 28]) + " | 0x" +
+                 ToHexString(memories[page + 29]) + " | 0x" +
+                 ToHexString(memories[page + 30]) + " | 0x" +
+                 ToHexString(memories[page + 31]) + " |"),
+            text("   |0x" + ToHexString(page + 32) + " | 0x" +
+                 ToHexString(memories[page + 32]) + " | 0x" +
+                 ToHexString(memories[page + 33]) + " | 0x" +
+                 ToHexString(memories[page + 34]) + " | 0x" +
+                 ToHexString(memories[page + 35]) + " | 0x" +
+                 ToHexString(memories[page + 36]) + " | 0x" +
+                 ToHexString(memories[page + 37]) + " | 0x" +
+                 ToHexString(memories[page + 38]) + " | 0x" +
+                 ToHexString(memories[page + 39]) + " |"),
+            text("   |0x" + ToHexString(page + 40) + " | 0x" +
+                 ToHexString(memories[page + 40]) + " | 0x" +
+                 ToHexString(memories[page + 41]) + " | 0x" +
+                 ToHexString(memories[page + 42]) + " | 0x" +
+                 ToHexString(memories[page + 43]) + " | 0x" +
+                 ToHexString(memories[page + 44]) + " | 0x" +
+                 ToHexString(memories[page + 45]) + " | 0x" +
+                 ToHexString(memories[page + 46]) + " | 0x" +
+                 ToHexString(memories[page + 47]) + " |"),
+            text("   |0x" + ToHexString(page + 48) + " | 0x" +
+                 ToHexString(memories[page + 48]) + " | 0x" +
+                 ToHexString(memories[page + 49]) + " | 0x" +
+                 ToHexString(memories[page + 50]) + " | 0x" +
+                 ToHexString(memories[page + 51]) + " | 0x" +
+                 ToHexString(memories[page + 52]) + " | 0x" +
+                 ToHexString(memories[page + 53]) + " | 0x" +
+                 ToHexString(memories[page + 54]) + " | 0x" +
+                 ToHexString(memories[page + 55]) + " |"),
+            text("   |0x" + ToHexString(page + 56) + " | 0x" +
+                 ToHexString(memories[page + 56]) + " | 0x" +
+                 ToHexString(memories[page + 57]) + " | 0x" +
+                 ToHexString(memories[page + 58]) + " | 0x" +
+                 ToHexString(memories[page + 59]) + " | 0x" +
+                 ToHexString(memories[page + 60]) + " | 0x" +
+                 ToHexString(memories[page + 61]) + " | 0x" +
+                 ToHexString(memories[page + 62]) + " | 0x" +
+                 ToHexString(memories[page + 63]) + " |"),
+        }) | border,
+        buttons0->Render(),
+    });
+  });
 
-  // Add border around the first column.
-  table.SelectColumn(0).Border(LIGHT);
+  /* RIGHT */
 
-  // Make first row bold with a double border.
-  table.SelectRow(0).Decorate(bold);
-  table.SelectRow(0).SeparatorVertical(LIGHT);
-  table.SelectRow(0).Border(DOUBLE);
+  auto buttons = Container::Horizontal({
+      Button(
+          "step",
+          [&] {
+            simulator.executeNextInstruction();
+            registers = simulator.getRegisters();
+            memories = simulator.getMemories();
+          },
+          ButtonOption::Animated()),
+      Button(
+          "excute",
+          [&] {
+            while (!simulator.isExecutionFinished()) {
+              simulator.executeNextInstruction();
+            }
+            registers = simulator.getRegisters();
+            memories = simulator.getMemories();
+          },
+          ButtonOption::Animated()),
+  });
 
-  auto document = table.Render();
+  // Modify the way to render them on screen:
+  auto right = Renderer(buttons, [&] {
+    return vbox({
+        vbox({
+            text("Registers Name | Number | Value"),
+            text("$zero          | 0      | 0x" + ToHexString(registers[0])),
+            text("$at            | 1      | 0x" + ToHexString(registers[1])),
+            text("$v0            | 2      | 0x" + ToHexString(registers[2])),
+            text("$v1            | 3      | 0x" + ToHexString(registers[3])),
+            text("$a0            | 4      | 0x" + ToHexString(registers[4])),
+            text("$a1            | 5      | 0x" + ToHexString(registers[5])),
+            text("$a2            | 6      | 0x" + ToHexString(registers[6])),
+            text("$a3            | 7      | 0x" + ToHexString(registers[7])),
+            text("$t0            | 8      | 0x" + ToHexString(registers[8])),
+            text("$t1            | 9      | 0x" + ToHexString(registers[9])),
+            text("$t2            | 10     | 0x" + ToHexString(registers[10])),
+            text("$t3            | 11     | 0x" + ToHexString(registers[11])),
+            text("$t4            | 12     | 0x" + ToHexString(registers[12])),
+            text("$t5            | 13     | 0x" + ToHexString(registers[13])),
+            text("$t6            | 14     | 0x" + ToHexString(registers[14])),
+            text("$t7            | 15     | 0x" + ToHexString(registers[15])),
+            text("$s0            | 16     | 0x" + ToHexString(registers[16])),
+            text("$s1            | 17     | 0x" + ToHexString(registers[17])),
+            text("$s2            | 18     | 0x" + ToHexString(registers[18])),
+            text("$s3            | 19     | 0x" + ToHexString(registers[19])),
+            text("$s4            | 20     | 0x" + ToHexString(registers[20])),
+            text("$s5            | 21     | 0x" + ToHexString(registers[21])),
+            text("$s6            | 22     | 0x" + ToHexString(registers[22])),
+            text("$s7            | 23     | 0x" + ToHexString(registers[23])),
+            text("$t8            | 24     | 0x" + ToHexString(registers[24])),
+            text("$t9            | 25     | 0x" + ToHexString(registers[25])),
+            text("$k0            | 26     | 0x" + ToHexString(registers[26])),
+            text("$k1            | 27     | 0x" + ToHexString(registers[27])),
+            text("$gp            | 28     | 0x" + ToHexString(registers[28])),
+            text("$sp            | 29     | 0x" + ToHexString(registers[29])),
+            text("$fp            | 30     | 0x" + ToHexString(registers[30])),
+            text("$ra            | 31     | 0x" + ToHexString(registers[31])),
+            separator(),
+        }) | border,
+        buttons->Render(),
+    });
+  });
 
-  auto middle = Renderer([] { return text("middle") | center; });
-  auto right = Renderer([&] { return document; });
   auto bottom = Renderer([] { return text("bottom") | center; });
 
-  int top_size = 20;
-  int right_size = 35;
-  int bottom_size = 7;
+  int top_size = 23;
+  int right_size = 40;
+  int bottom_size = 10;
 
   auto container = middle;
   container = ResizableSplitTop(top, container, &top_size);
