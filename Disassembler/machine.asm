@@ -1,0 +1,24 @@
+	addi   $s0, $zero, 1
+	addi   $s1, $zero, 2
+	addi   $s2, $zero, 3
+	addi   $s3, $zero, 4
+	addi   $t8, $zero, 64
+	add    $t0, $zero, $zero
+Addr_0018:
+	add    $t1, $zero, $zero
+	andi   $t1, $t1, 255
+	add    $t1, $t1, $t2
+	or     $t1, $t1, $t2
+	ori    $t1, $t1, 256
+	sub    $t1, $t1, $t2
+	sub    $s2, $s2, $s0
+	nor    $t1, $t1, $t2
+	and    $t1, $t1, $t2
+	sll    $t3, $t2, 2
+	srl    $t3, $t2, 1
+	bne    $t0, $s2, Addr_0018
+	and    $s3, $s3, $zero
+	beq    $t0, $s3, Addr_0064
+	addi   $t0, $t0, 1
+	addi   $t4, $zero, 1
+	sub    $t4, $t4, $t5
