@@ -391,7 +391,7 @@ void Assembly_to_Machine(string *mem) {
                      To_string(rd, 2, 5) + To_string(rt, 2, 5) + funct;
     } else if (part[0] == "jr") // Jr特殊
     {
-      Machine_code = "000000" + To_string(rs, 2, 5) + "000000000000000001000";
+      Machine_code = "000000" + To_string(rd, 2, 5) + "000000000000000" + funct;
     } else // 普通无shamt的R型，确定三个寄存器，注意jr特殊
     {
       Machine_code = opcode + To_string(rs, 2, 5) + To_string(rt, 2, 5) +

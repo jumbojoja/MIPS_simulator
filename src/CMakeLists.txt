@@ -32,16 +32,22 @@ endif()
 
 add_subdirectory(compile)
 add_subdirectory(simulator)
+add_subdirectory(disassembler)
+add_subdirectory(float)
 
 add_executable(MIPS_simulator main.cpp )
 target_include_directories(MIPS_simulator PRIVATE 
                            ${PROJECT_BINARY_DIR}
                            ${PROJECT_SOURCE_DIR}/compile
                            ${PROJECT_SOURCE_DIR}/simulator
+                           ${PROJECT_SOURCE_DIR}/disassembler
+                           ${PROJECT_SOURCE_DIR}/float
                           )
 
 target_link_libraries(MIPS_simulator PRIVATE compiler)
 target_link_libraries(MIPS_simulator PRIVATE simulator)
+target_link_libraries(MIPS_simulator PRIVATE disassembler)
+target_link_libraries(MIPS_simulator PRIVATE float_calculate)
 
 target_link_libraries(MIPS_simulator
   PRIVATE ftxui::screen

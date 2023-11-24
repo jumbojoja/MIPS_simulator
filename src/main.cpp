@@ -2,8 +2,9 @@
 #include <cstring>
 #include <iostream> // for endl, cout, ostream
 #include <memory>   // for shared_ptr, allocator, __shared_ptr_access
-#include <string>   // for basic_string, allocator, string
-#include <vector>   // for vector
+#include <stdlib.h>
+#include <string> // for basic_string, allocator, string
+#include <vector> // for vector
 
 #include "ftxui/component/captured_mouse.hpp" // for ftxui
 #include "ftxui/component/component.hpp" // for Renderer, ResizableSplitBottom, ResizableSplitLeft, ResizableSplitRight, ResizableSplitTop
@@ -15,8 +16,10 @@
 #include "ftxui/screen/color.hpp" // for Color, Color::Blue, Color::Cyan, Color::White, ftxui
 #include "ftxui/screen/screen.hpp" // for Screen
 
+#include "Float_Calculate.h"
 #include "MIPS_Simulator.h"
 #include "compiler.h"
+#include "disassembler.h"
 
 using namespace std;
 using namespace ftxui;
@@ -263,18 +266,17 @@ int main() {
   });
 
   // BOTTOM
-  //  The data:
-  std::string num1;
-  std::string num2;
-  std::string ope;
+  std::string num1 = "23.5";
+  std::string num2 = "44.4";
+  std::string ope = "+";
   std::string phoneNumber;
 
   // The basic input components:
   Component input_num1 = Input(&num1, "number1");
   Component input_num2 = Input(&num2, "number2");
-
   Component input_ope = Input(&ope, "operator(+ or -)");
 
+  /* input_num1 |= CatchEvent([&](Event event) { return num1.size() <= 1; }); */
   // The phone number input component:
   // We are using `CatchEvent` to filter out non-digit characters.
   Component input_phone_number = Input(&phoneNumber, "phone number");
@@ -304,23 +306,60 @@ int main() {
                separator(),
                vbox({
                    text("Number1") | center,
-                   text("Decimal(exact) :" + num1),
-                   text("Binary         :" + num1),
-                   text("Hexadecimal    :" + num1),
+                   text("Decimal     :" + num1),
+                   text("Binary      :" +
+                        (num1.size() >= 1
+                             ? Float_To_Binary_ByMemory(stof(num1))
+                             : "00000000000000000000000000000000")),
+                   text("Hexadecimal :" +
+                        (num1.size() >= 1
+                             ? ToHexString(To_decimal_int(
+                                   Float_To_Binary_ByMemory(stof(num1)), 2))
+                             : "00000000")),
                }),
                separator(),
                vbox({
                    text("Number2") | center,
-                   text("Decimal(exact) :" + num2),
-                   text("Binary         :" + num2),
-                   text("Hexadecimal    :" + num2),
+                   text("Decimal     :" + num2),
+                   text("Binary      :" +
+                        (num2.size() >= 1
+                             ? Float_To_Binary_ByMemory(stof(num2))
+                             : "00000000000000000000000000000000")),
+                   text("Hexadecimal :" +
+                        (num2.size() >= 1
+                             ? ToHexString(To_decimal_int(
+                                   Float_To_Binary_ByMemory(stof(num2)), 2))
+                             : "00000000")),
                }),
                separator(),
                vbox({
                    text("Result") | center,
-                   text("Decimal(exact) :" + ope),
-                   text("Binary         :" + ope),
-                   text("Hexadecimal    :" + ope),
+                   text("Decimal     :" +
+                        ((num1.size() >= 1 && num2.size() >= 1)
+                             ? ((ope == "+")
+                                    ? to_string(stof(num1) + stof(num2))
+                                    : to_string(stof(num1) - stof(num2)))
+                             : "0")),
+
+                   text("Binary      :" +
+                        ((num1.size() >= 1 && num2.size() >= 1)
+                             ? ((ope == "+") ? Float_To_Binary_ByMemory(
+                                                   stof(num1) + stof(num2))
+                                             : Float_To_Binary_ByMemory(
+                                                   stof(num1) - stof(num2)))
+                             : "00000000000000000000000000000000")),
+
+                   text("Hexadecimal :" +
+                        ((num1.size() >= 1 && num2.size() >= 1)
+                             ? ((ope == "+") ? ToHexString(To_decimal_int(
+                                                   Float_To_Binary_ByMemory(
+                                                       stof(num1) + stof(num2)),
+                                                   2))
+                                             : ToHexString(To_decimal_int(
+                                                   Float_To_Binary_ByMemory(
+                                                       stof(num1) - stof(num2)),
+                                                   2)))
+                             : "00000000000000000000000000000000")),
                }),
                separator(),
            }) |
