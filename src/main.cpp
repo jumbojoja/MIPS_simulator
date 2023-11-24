@@ -115,6 +115,10 @@ int main() {
             text("   |  Address  | Value(+0)  | Value(+4)  | Value(+8)  | "
                  "Value(+C)  | Value(+10) | Value(+14) | Value(+18) "
                  "| Value(+1C) |"),
+            text(
+                "   "
+                "-------------------------------------------------------------"
+                "--------------------------------------------------------    "),
             text("   |0x" + ToHexString(page) + " | 0x" +
                  ToHexString(memories[page]) + " | 0x" +
                  ToHexString(memories[page + 1]) + " | 0x" +
@@ -220,6 +224,7 @@ int main() {
     return vbox({
         vbox({
             text("Registers Name | Number | Value"),
+            text("--------------------------------------"),
             text("$zero          | 0      | 0x" + ToHexString(registers[0])),
             text("$at            | 1      | 0x" + ToHexString(registers[1])),
             text("$v0            | 2      | 0x" + ToHexString(registers[2])),
@@ -252,13 +257,76 @@ int main() {
             text("$sp            | 29     | 0x" + ToHexString(registers[29])),
             text("$fp            | 30     | 0x" + ToHexString(registers[30])),
             text("$ra            | 31     | 0x" + ToHexString(registers[31])),
-            separator(),
         }) | border,
         buttons->Render(),
     });
   });
 
-  auto bottom = Renderer([] { return text("bottom") | center; });
+  // BOTTOM
+  //  The data:
+  std::string num1;
+  std::string num2;
+  std::string ope;
+  std::string phoneNumber;
+
+  // The basic input components:
+  Component input_num1 = Input(&num1, "number1");
+  Component input_num2 = Input(&num2, "number2");
+
+  Component input_ope = Input(&ope, "operator(+ or -)");
+
+  // The phone number input component:
+  // We are using `CatchEvent` to filter out non-digit characters.
+  Component input_phone_number = Input(&phoneNumber, "phone number");
+  input_phone_number |= CatchEvent([&](Event event) {
+    return event.is_character() && !std::isdigit(event.character()[0]);
+  });
+  input_phone_number |= CatchEvent([&](Event event) {
+    return event.is_character() && phoneNumber.size() > 10;
+  });
+
+  // The component tree:
+  auto component = Container::Vertical({
+      input_num1,
+      input_num2,
+      input_ope,
+  });
+
+  // Tweak how the component tree is rendered:
+  auto bottom = Renderer(component, [&] {
+    return hbox({
+               vbox({
+                   hbox(text(" number1  : "), input_num1->Render()),
+                   hbox(text(" number2  : "), input_num2->Render()),
+                   hbox(text(" operator : "), input_ope->Render()),
+
+               }),
+               separator(),
+               vbox({
+                   text("Number1") | center,
+                   text("Decimal(exact) :" + num1),
+                   text("Binary         :" + num1),
+                   text("Hexadecimal    :" + num1),
+               }),
+               separator(),
+               vbox({
+                   text("Number2") | center,
+                   text("Decimal(exact) :" + num2),
+                   text("Binary         :" + num2),
+                   text("Hexadecimal    :" + num2),
+               }),
+               separator(),
+               vbox({
+                   text("Result") | center,
+                   text("Decimal(exact) :" + ope),
+                   text("Binary         :" + ope),
+                   text("Hexadecimal    :" + ope),
+               }),
+               separator(),
+           }) |
+           border;
+  });
+  /* auto bottom = Renderer([] { return text("bottom") | center; }); */
 
   int top_size = 23;
   int right_size = 40;
