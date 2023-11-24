@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Float_Calculate.cpp" />
     <ClCompile Include="MIPS_Simulator.cpp" />
     <ClCompile Include="Instructions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MIPS_Simulator.h" />
+    <ClInclude Include="Float_Calculate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -68,7 +68,7 @@ public:
     bool loadInstructions(const std::string& filePath);
 
     // 获取寄存器的值
-    int getRegister(int reg) const;
+    uint32_t getRegister(int reg) const;
 
     // 获取所有寄存器的值
     std::vector<unsigned int> getRegisters();

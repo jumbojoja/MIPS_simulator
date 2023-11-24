@@ -175,7 +175,7 @@ void MIPS_Simulator::parseAndExecute(const std::string& code) {
     }
 }
 
-int MIPS_Simulator::getRegister(int reg) const {
+uint32_t MIPS_Simulator::getRegister(int reg) const {
     return registers[reg];
 }
 

@@ -2,8 +2,8 @@
 
 
 // 将寄存器字符串映射到编号的函数
-int regToInt(const std::string& reg) {
-    static const std::unordered_map<std::string, int> registerMap = {
+uint32_t regToInt(const std::string& reg) {
+    static const std::unordered_map<std::string, uint32_t> registerMap = {
         {"00000", 0}, {"00001", 1}, {"00010", 2}, {"00011", 3},
         {"00100", 4}, {"00101", 5}, {"00110", 6}, {"00111", 7},
         {"01000", 8}, {"01001", 9}, {"01010", 10}, {"01011", 11},
@@ -42,88 +42,88 @@ double binaryToDecimal(const std::string& binary) {
 
 // add - R 类型指令
 void MIPS_Simulator::add(const std::string& rs, const std::string& rt, const std::string& rd) {
-    int rs_value = getRegister(regToInt(rs));
-    int rt_value = getRegister(regToInt(rt));
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t rt_value = getRegister(regToInt(rt));
     setRegister(regToInt(rd), rs_value + rt_value);
     std::cout << "add " << rd << ", " << rs << ", " << rt << std::endl;
 }
 
 // and - R 类型指令
 void MIPS_Simulator::andOp(const std::string& rs, const std::string& rt, const std::string& rd) {
-    int rs_value = getRegister(regToInt(rs));
-    int rt_value = getRegister(regToInt(rt));
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t rt_value = getRegister(regToInt(rt));
     setRegister(regToInt(rd), rs_value & rt_value);
     std::cout << "and " << rd << ", " << rs << ", " << rt << std::endl;
 }
 
 // or - R 类型指令
 void MIPS_Simulator::orOp(const std::string& rs, const std::string& rt, const std::string& rd) {
-    int rs_value = getRegister(regToInt(rs));
-    int rt_value = getRegister(regToInt(rt));
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t rt_value = getRegister(regToInt(rt));
     setRegister(regToInt(rd), rs_value | rt_value);
     std::cout << "or " << rd << ", " << rs << ", " << rt << std::endl;
 }
 
 // sub - R 类型指令
 void MIPS_Simulator::sub(const std::string& rs, const std::string& rt, const std::string& rd) {
-    int rs_value = getRegister(regToInt(rs));
-    int rt_value = getRegister(regToInt(rt));
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t rt_value = getRegister(regToInt(rt));
     setRegister(regToInt(rd), rs_value - rt_value);
     std::cout << "sub " << rd << ", " << rs << ", " << rt << std::endl;
 }
 
 // nor - R 类型指令
 void MIPS_Simulator::nor(const std::string& rs, const std::string& rt, const std::string& rd) {
-    int rs_value = getRegister(regToInt(rs));
-    int rt_value = getRegister(regToInt(rt));
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t rt_value = getRegister(regToInt(rt));
     setRegister(regToInt(rd), ~(rs_value | rt_value));
     std::cout << "nor " << rd << ", " << rs << ", " << rt << std::endl;
 }
 
 // sll - R 类型指令
 void MIPS_Simulator::sll(const std::string& rt, const std::string& rd, const std::string& sa) {
-    int rt_value = getRegister(regToInt(rt));
-    int sa_value = binaryToDecimal(sa);
+    uint32_t rt_value = getRegister(regToInt(rt));
+    uint32_t sa_value = binaryToDecimal(sa);
     setRegister(regToInt(rd), rt_value << sa_value);
     std::cout << "sll " << rd << ", " << rt << ", " << sa << std::endl;
 }
 
 // srl - R 类型指令
 void MIPS_Simulator::srl(const std::string& rt, const std::string& rd, const std::string& sa) {
-    int rt_value = getRegister(regToInt(rt));
-    int sa_value = binaryToDecimal(sa);
+    uint32_t rt_value = getRegister(regToInt(rt));
+    uint32_t sa_value = binaryToDecimal(sa);
     setRegister(regToInt(rd), rt_value >> sa_value);
     std::cout << "srl " << rd << ", " << rt << ", " << sa << std::endl;
 }
 
 // addi - I 类型指令
 void MIPS_Simulator::addi(const std::string& rs, const std::string& rt, const std::string& imm) {
-    int rs_value = getRegister(regToInt(rs));
-    int imm_value = binaryToDecimal(imm);
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t imm_value = binaryToDecimal(imm);
     setRegister(regToInt(rt), rs_value + imm_value);
     std::cout << "addi " << rt << ", " << rs << ", " << imm << std::endl;
 }
 
 // andi - I 类型指令
 void MIPS_Simulator::andi(const std::string& rs, const std::string& rt, const std::string& imm) {
-    int rs_value = getRegister(regToInt(rs));
-    int imm_value = binaryToDecimal(imm);
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t imm_value = binaryToDecimal(imm);
     setRegister(regToInt(rt), rs_value & imm_value);
     std::cout << "andi " << rt << ", " << rs << ", " << imm << std::endl;
 }
 
 // ori - I 类型指令
 void MIPS_Simulator::ori(const std::string& rs, const std::string& rt, const std::string& imm) {
-    int rs_value = getRegister(regToInt(rs));
-    int imm_value = binaryToDecimal(imm);
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t imm_value = binaryToDecimal(imm);
     setRegister(regToInt(rt), rs_value | imm_value);
     std::cout << "ori " << rt << ", " << rs << ", " << imm << std::endl;
 }
 
 // bne - I 类型指令
 void MIPS_Simulator::bne(const std::string& rs, const std::string& rt, const std::string& offset) {
-    int rs_value = getRegister(regToInt(rs));
-    int rt_value = getRegister(regToInt(rt));
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t rt_value = getRegister(regToInt(rt));
 
     // 将6位的偏移量解释为有符号整数
     short offset_value = static_cast<short>(std::stoi(offset, nullptr, 2));
@@ -136,8 +136,8 @@ void MIPS_Simulator::bne(const std::string& rs, const std::string& rt, const std
 
 // beq - I 类型指令
 void MIPS_Simulator::beq(const std::string& rs, const std::string& rt, const std::string& offset) {
-    int rs_value = getRegister(regToInt(rs));
-    int rt_value = getRegister(regToInt(rt));
+    uint32_t rs_value = getRegister(regToInt(rs));
+    uint32_t rt_value = getRegister(regToInt(rt));
 
     // 将16位的偏移量解释为有符号整数
     short offset_value = static_cast<short>(std::stoi(offset, nullptr, 2));
@@ -155,7 +155,7 @@ void MIPS_Simulator::jal(const std::string& target) {
     setRegister(31, pc + 4); // 保存返回地址到 $ra
 
     // 将26位的目标地址解释为有符号整数
-    unsigned int target_value = std::stoi(target, nullptr, 2);
+    uint32_t target_value = std::stoi(target, nullptr, 2);
 
     // 由于是26位地址，左移2位得到32位地址
     pc = (target_value << 2) - 4; // 跳转后 PC 将增加 target_value
