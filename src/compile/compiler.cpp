@@ -176,7 +176,7 @@ void Assembly_to_Machine(string *mem) {
           type_of_rd += part[1][i];
         }
       }
-      if (jump_type == 1) {
+      if (jump_type == 1 && part[0] != "jr") {
         type_of_rd = part[1][0] + type_of_rd;
       }
       for (int i = 1; i < part[2].length(); i++) {
@@ -455,8 +455,9 @@ void get_code() {
       index_of_lable.push_back(0);
     }
     j++;
+    index++;
   }
-  Assembly_to_Machine(mem);
+  /* Assembly_to_Machine(mem); */
 }
 
 void write_code() {
