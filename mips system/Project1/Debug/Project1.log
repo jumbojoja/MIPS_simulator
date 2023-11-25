@@ -1,9 +1,0 @@
-﻿  Float_Calculate.cpp
-  Instructions.cpp
-C:\Users\yang1\Desktop\mips system\Project1\Instructions.cpp(86,23): warning C4244: “初始化”: 从“double”转换到“uint32_t”，可能丢失数据
-C:\Users\yang1\Desktop\mips system\Project1\Instructions.cpp(94,23): warning C4244: “初始化”: 从“double”转换到“uint32_t”，可能丢失数据
-C:\Users\yang1\Desktop\mips system\Project1\Instructions.cpp(102,24): warning C4244: “初始化”: 从“double”转换到“uint32_t”，可能丢失数据
-C:\Users\yang1\Desktop\mips system\Project1\Instructions.cpp(110,24): warning C4244: “初始化”: 从“double”转换到“uint32_t”，可能丢失数据
-C:\Users\yang1\Desktop\mips system\Project1\Instructions.cpp(118,24): warning C4244: “初始化”: 从“double”转换到“uint32_t”，可能丢失数据
-  正在生成代码...
-  Project1.vcxproj -> C:\Users\yang1\Desktop\mips system\Debug\Project1.exe

@@ -40,6 +40,7 @@ int main() {
   get_code();
   Assembly_to_Machine(mem);
   write_code();
+  read_and_write();
 
   for (int j = 0; mem[j] != ""; ++j) {
     num++;

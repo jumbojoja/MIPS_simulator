@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef COMPARCHPROJ1_HPP
 #define COMPARCHPROJ1_HPP
@@ -80,15 +80,17 @@ return_by_dis get_register(string reg);
 int get_imm(string immediateStr);
 
 // Converts shamt string to corresponding int value
-int shamtVal(string shamt);
+int get_shamt(string shamt);
 
 // Converts regNum to register string
 string regConvert(int regNum);
 
 // Converts binary string to hex char
-char binaryToHex(string binaryStr);
+char binary_to_hex(string binaryStr);
 
 // Creates the address string
 addressReturn addressStrForm(int immNum, int lineNum);
+
+void read_and_write();
 
 #endif
