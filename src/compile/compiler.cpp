@@ -435,7 +435,7 @@ void get_code() {
   infile.close();
   while (mem[j] != "") {
     vector<string> part = stringSplit(mem[j], ' ');
-    if (part.size() == 5) // 有标签
+    if (part.size() == 5 || part.size() == 3) // 有标签
     {
       lable.push_back(part[0]);
       index_of_lable.push_back(index);
