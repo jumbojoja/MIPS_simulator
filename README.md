@@ -16,6 +16,7 @@ Write the files to be compiled and decompiled in the IO folder, please make sure
 
 ### How to use
 
+![](example.png)
 
 On the right side are the values of each register. Click the step button to execute in one step, and click the execute button to run (only one can be selected, do not press the step button frantically).
 
