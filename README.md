@@ -9,12 +9,12 @@ cmake --build .
 .\bin\MIPS_simulator.exe
 ````
 
-##### Attention
+### Attention
 
 
 Write the files to be compiled and decompiled in the IO folder, please make sure to add a space after each comma.
 
-##### How to use
+### How to use
 
 
 On the right side are the values of each register. Click the step button to execute in one step, and click the execute button to run (only one can be selected, do not press the step button frantically).
